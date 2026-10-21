@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080f29">
+<title>Somewhere Between Yesterday and Tomorrow</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #080f29;
+  color: #f9edcf;
+  font-family: Georgia, serif;
+  text-align: center;
+}
+
+section {
+  display: none;
+  min-height: 100vh;
+  padding: 45px 20px;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background: radial-gradient(ellipse at top, #24345b, #080f29 70%);
+}
+
+section.active {
+  display: flex;
+}
+
+h1, h2 {
+  font-weight: normal;
+  color: #f2d59a;
+}
+
+h1 {
+  font-size: clamp(30px, 7vw, 49px);
+  animation: glow 3s infinite;
+}
+
+h2 {
+  font-size: clamp(25px, 6vw, 36px);
+}
+
+p {
+  line-height: 1.9;
+  max-width: 650px;
+}
+
+.card {
+  width: min(100%, 650px);
+  padding: 28px 22px;
+  margin: 15px auto;
+  border: 1px solid #b99a60;
+  border-radius: 18px;
+  background: #101a35ef;
+  box-shadow: 0 0 30px #c9a45c17;
+}
+
+button, input {
+  font: inherit;
+  border-radius: 10px;
+  padding: 13px 16px;
+  margin: 8px;
+  max-width: 100%;
+}
+
+button {
+  border: 1px solid #d7b778;
+  background: #d7b778;
+  color: #11162c;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+}
+
+input {
+  width: min(100%, 280px);
+  background: #f9edcf;
+  color: #17182a;
+  border: 1px solid #d7b778;
+}
+
+.small {
+  font-size: 14px;
+  color: #d6c9a8;
+}
+
+.gold {
+  color: #f3d28d;
+}
+
+.letter {
+  white-space: normal;
+  text-align: left;
+  line-height: 2;
+  background: #f5e7c7;
+  color: #443321;
+  border-radius: 8px;
+  padding: 25px;
+  max-width: 600px;
+  width: 100%;
+  margin: 15px auto;
+  overflow-wrap: anywhere;
+}
+
+.letter h2 {
+  color: #76552a;
+  text-align: center;
+}
+
+.star {
+  font-size: 30px;
+  cursor: pointer;
+  color: #f7d88e;
+  background: transparent;
+  border: none;
+  padding: 12px;
+}
+
+.star.found {
+  color: white;
+  text-shadow: 0 0 20px gold;
+}
+
+#cake {
+  font-size: 80px;
+  animation: float 2s infinite ease-in-out;
+}
+  /* Magical birthday cake */
+
+#cakeScene {
+  position: relative;
+  width: 100%;
+  max-width: 300px;
+  margin: 15px auto;
+  padding-top: 20px;
+}
+
+#candles {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  position: absolute;
+  top: 12px;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.candle {
+  position: relative;
+  width: 8px;
+  height: 30px;
+  border-radius: 3px;
+  background: repeating-linear-gradient(
+    135deg,
+    #f5d78e 0 5px,
+    #fff0c2 5px 9px
+  );
+}
+
+.flame {
+  position: absolute;
+  width: 11px;
+  height: 16px;
+  top: -17px;
+  left: -1.5px;
+  background: #ffdb73;
+  border-radius: 50% 50% 45% 45%;
+  box-shadow: 0 0 12px #ffc857, 0 0 24px #ffb347;
+  transform-origin: center bottom;
+  animation: flicker 0.7s infinite alternate;
+}
+
+@keyframes flicker {
+  from {
+    transform: rotate(-5deg) scale(0.92);
+  }
+  to {
+    transform: rotate(5deg) scale(1.08);
+  }
+}
+
+#cakeScene.blown .flame {
+  opacity: 0;
+  transform: scale(0);
+  animation: none;
+  transition: opacity 0.35s, transform 0.35s;
+}
+
+#sparkles {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.sparkle {
+  position: absolute;
+  color: #ffe5a1;
+  font-size: 23px;
+  animation: sparkleRise 1.4s ease-out forwards;
+}
+
+@keyframes sparkleRise {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.5) rotate(0deg);
+  }
+
+  30% {
+    opacity: 1;
+  }
+
+  to {
+    opacity: 0;
+    transform: translateY(-65px) scale(1.3) rotate(100deg);
+  }
+}
+
+#cakeMsg {
+  min-height: 30px;
+}
+
+@keyframes float {
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes glow {
+  50% {
+    text-shadow: 0 0 25px #ffe3a1;
+  }
+}
+
+.petal {
+  position: fixed;
+  top: -20px;
+  pointer-events: none;
+  animation: fall 8s linear forwards;
+  z-index: 3;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(500deg);
+    opacity: 0;
+  }
+}
+
+.hidden {
+  display: none !important;
+}
+  .hiddenStar {
+  background: transparent;
+  border: none;
+  color: #f2d59a;
+  font-size: 23px;
+  padding: 8px;
+  opacity: 0.65;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.hiddenStar:hover {
+  opacity: 1;
+  transform: scale(1.25);
+}
+
+.hiddenStar.found {
+  color: white;
+  text-shadow: 0 0 15px gold;
+  opacity: 1;
+}
+
+#qualities p {
+  animation: appear 0.8s ease;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 480px) {
+  section {
+    padding: 22px 12px;
+  }
+
+  .card {
+    padding: 22px 15px;
+  }
+
+  .letter {
+    padding: 17px;
+    line-height: 1.85;
+  }
+
+  button {
+    max-width: 100%;
+    white-space: normal;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- SECTION 1: WELCOME -->
+
+<section id="s1" class="active">
+  <div class="card">
+    <p class="gold">✦ A little mystery awaits ✦</p>
+
+    <h1>Somewhere Between Yesterday and Tomorrow…</h1>
+
+    <p>A little mystery is waiting to be discovered.</p>
+
+    <div style="font-size:65px">✉️</div>
+<button class="hiddenStar" onclick="findStar(0)" aria-label="Collect a star">✦</button>
+    <button onclick="go(2)">Unlock the Mystery ✨</button>
+  </div>
+</section>
+
+
+<!-- SECTION 2: RIDDLE -->
+
+<section id="s2">
+  <div class="card">
+    <h2>A Little Riddle 🌙</h2>
+
+    <p>
+      I arrive once every year, bringing wishes, smiles, and cheer.
+      A special day that belongs to you—what am I?
+    </p>
+
+    <input
+      id="riddle"
+      placeholder="Your answer…"
+      autocomplete="off"
+      onkeydown="if(event.key==='Enter') checkRiddle()"
+    >
+
+    <br>
+
+    <button onclick="checkRiddle()">Unlock ✨</button>
+
+    <p id="rmsg" class="small"></p>
+    <button class="hiddenStar" onclick="findStar(1)" aria-label="Collect a star">✧</button>
+  </div>
+</section>
+
+
+<!-- SECTION 3: SECRET CODE -->
+
+<section id="s3">
+  <div class="card">
+    <p class="gold">✦ One Last Little Secret ✦</p>
+
+    <h2>A Key to the Mystery 🔐</h2>
+
+    <p>
+      Every mystery has a key.
+      Perhaps this one is closer to you than you think.
+    </p>
+
+    <input
+      id="code"
+      placeholder="Enter the secret code"
+      inputmode="text"
+      autocomplete="off"
+      autocapitalize="characters"
+      onkeydown="if(event.key==='Enter') checkCode()"
+      aria-label="Enter the secret code"
+    >
+
+    <br>
+
+    <button onclick="checkCode()">Open the Door ✨</button>
+
+    <p id="cmsg" class="small" aria-live="polite"></p>
+
+    <br>
+
+    <details>
+      <summary class="gold" style="cursor:pointer;">
+        Need a little clue? 🌙
+      </summary>
+
+      <p class="small">
+        The first part is the name of the person this surprise is for.
+        The second part is the age he's celebrating today.
+      </p>
+
+      <p class="small">
+        Put them together, with no spaces, and you'll find the key. ✨
+      </p>
+    </details>
+
+  </div>
+</section>
+
+
+<!-- SECTION 4: BIRTHDAY CELEBRATION -->
+
+<section id="s4">
+  <div class="card">
+    <p>✦ A special day. A special person. ✦</p>
+
+    <h1>HAPPY 16TH BIRTHDAY, SHUBHAM!</h1>
+
+    <p class="gold">
+      23 October 2010 &nbsp;→&nbsp; 23 October 2026
+    </p>
+
+    <p class="small">
+      Sixteen years of becoming who you're meant to be. ✨
+    </p>
+
+    <p>
+      May the coming year bring you beautiful memories,
+      unexpected happiness and reasons to be proud of yourself.
+    </p>
+
+<div id="cakeScene">
+
+  <div id="cake">🎂</div>
+
+  <div id="candles" aria-label="Six birthday candles">
+    <span class="candle"><span class="flame"></span></span>
+    <span class="candle"><span class="flame"></span></span>
+    <span class="candle"><span class="flame"></span></span>
+    <span class="candle"><span class="flame"></span></span>
+    <span class="candle"><span class="flame"></span></span>
+    <span class="candle"><span class="flame"></span></span>
+  </div>
+
+  <div id="sparkles" aria-hidden="true"></div>
+
+</div>
+
+<button class="hiddenStar" onclick="findStar(2)" aria-label="Collect a star">✦</button>
+
+<p>Close your eyes, make a wish, and then… 🌙</p>
+
+<button id="cakeButton" onclick="blow()">
+  Blow Out the Candles 🕯️
+</button>
+
+<p id="cakeMsg" aria-live="polite"></p>
+
+    <button onclick="go(5)">There's Something for You 💌</button>
+  </div>
+</section>
+
+
+<!-- SECTION 5: BIRTHDAY LETTER -->
+
+<section id="s5">
+  <div class="card">
+    <h2>A Letter for You 💌</h2>
+
+    <p>Some words deserve to be read slowly.</p>
+
+    <div class="letter">
+
+      <h2>💌 Happy 16th Birthday, Shubham! 🎂🤍</h2>
+
+      <p>
+        Hey, birthday boy! 😂✨ So, you're sixteen now! Does that mean
+        you'll stop overthinking and finally realise just how capable you
+        are? Probably not—but I'm still going to remind you! 🤭
+      </p>
+
+      <p>
+        I never expected meeting you to become one of the things I'd be
+        grateful for from my Class 10 journey, but here we are. I'm genuinely
+        glad our paths crossed. Thank you for your kind heart, the respect
+        you show me, and all the little things you do that mean more than
+        you realise. You make me feel valued and cared for, and that's
+        something I truly appreciate. 🫶🏻
+      </p>
+
+      <p>
+        Since this is our last year of school, I hope we make even more
+        memories worth smiling about. We don't know where life will take us
+        after Class 10 or how things might change, but I'm grateful that
+        you're part of this chapter of my life. I hope that, years from now,
+        we'll be able to look back on these days and smile at all the memories
+        we've made. 🌷
+      </p>
+
+      <p>
+        And Shubham, please believe in yourself a little more. One bad day
+        doesn't define you, and one mistake doesn't erase your abilities.
+        Don't let overthinking convince you that you're not good enough.
+        Be patient with yourself, keep working towards your dreams, and
+        remember to give yourself the same kindness you give to others.
+        You don't have to have everything figured out at sixteen. You're
+        still growing, learning, and discovering all that you're capable of. ❤️
+      </p>
+
+      <p>
+        I hope this new year of your life brings you happiness, new
+        opportunities, unforgettable memories, and plenty of reasons to be
+        proud of yourself. I hope you find the courage to face difficult
+        days, the confidence to trust your abilities, and the peace to
+        appreciate how far you've come. Keep that kind heart, keep that
+        smile, and please don't let overthinking steal too many of your
+        happy moments! 😂🤍
+      </p>
+
+      <p>
+        And if you ever read this letter again on a day when things don't
+        go your way, remember this:
+        <strong>You don't have to be perfect to be someone worth believing in.</strong>
+        Keep trying, keep growing, and never underestimate what you can
+        achieve when you give yourself a fair chance.
+      </p>
+
+      <p>
+        Happy Birthday to someone who became such a beautiful, unexpected
+        part of my school story. I'm so glad I met you, and I genuinely
+        hope to see you grow into someone who believes in himself as much
+        as the people who believe in him. ✨
+      </p>
+
+      <p>
+        Here's to sixteen, the memories we've made, the moments still
+        waiting to happen, and all the wonderful chapters life has ahead
+        of you.
+      </p>
+
+      <p>
+        <strong>Happy Birthday once again, Shubham! 🎂💌</strong>
+      </p>
+
+      <p>
+        Take care of yourself, be kinder to yourself, and never forget
+        that your story is only just beginning. 🤍🌙
+      </p>
+
+    </div>
+
+    <button onclick="go(6)">Continue ✨</button>
+  </div>
+</section>
+
+
+<!-- SECTION 6: THINGS I ADMIRE -->
+
+<section id="s6">
+  <div class="card">
+    <p>There's something else I never told you…</p>
+
+    <button
+      style="font-size:55px;background:transparent;border:0"
+      onclick="revealAdmiration()"
+      aria-label="Open the envelope"
+    >✉️</button>
+
+    <p class="small">Tap the envelope to open it.</p>
+
+    <div id="admiration" class="hidden">
+      <h2>Things I Admire About You 🤍</h2>
+
+      <div id="qualities"></div>
+
+      <p>Some things are easier to write than to say. ✨</p>
+
+      <button onclick="go(7)">Keep This Little Moment ✨</button>
+      <button class="hiddenStar" onclick="findStar(3)" aria-label="Collect a star">✧</button>
+    </div>
+  </div>
+</section>
+
+
+<!-- SECTION 7: THREE LITTLE NOTES -->
+
+<section id="s7">
+  <div class="card">
+    <h2>Three Little Notes 💌</h2>
+
+    <p>Open whichever note you need.</p>
+
+    <button onclick="note(0)">Open When You Doubt Yourself</button>
+
+    <button onclick="note(1)">Three Things I Hope You Never Forget</button>
+
+    <button onclick="note(2)">A Letter to Your Future Self</button>
+
+    <div class="letter hidden" id="noteText"></div>
+
+    <br>
+
+    <button onclick="go(8)">Discover Another Secret ⭐</button>
+  </div>
+</section>
+
+
+<!-- SECTION 8: SECRET ARCHIVE -->
+
+<section id="s8">
+  <div class="card">
+    <h2>Secret Archive No. SH-16-23102010</h2>
+    <button class="hiddenStar" onclick="findStar(4)" aria-label="Collect a star">✦</button>
+
+    <p>
+      Some details are easy to miss. Five little stars are waiting to be found.
+    </p>
+
+    <div id="stars">
+  <p class="gold">Stars discovered: <span id="starCount">0</span> / 5 ✨</p>
+</div>
+
+<p id="starMsg">Find all five stars hidden throughout the website. 🌙</p>
+
+    <button onclick="go(9)">A Message From the Future 🌠</button>
+  </div>
+</section>
+
+
+<!-- SECTION 9: FUTURE MESSAGE -->
+
+<section id="s9">
+  <div class="card">
+    <h2>A Message From the Future 🌠</h2>
+
+    <div class="letter">
+      One day, you'll look back at who you are today.
+
+      <br><br>
+
+      I hope you'll smile at how far you've come, forgive yourself for the
+      things you didn't know, and feel proud that you kept moving forward.
+
+      <br><br>
+
+      Your story is still being written. Don't rush to the last page.
+    </div>
+
+    <button onclick="go(10)">One Last Thing… 🌙</button>
+  </div>
+</section>
+
+
+<!-- SECTION 10: THE FINAL PAGE -->
+
+<section id="s10">
+  <div class="card">
+    <p>School days slowly become memories.</p>
+
+    <p>
+      Someday, life may take everyone along different roads.
+      But the moments we share can remain special, even as we grow
+      into people we haven't met yet.
+    </p>
+
+    <h1>Some pages are meant to be remembered.</h1>
+
+    <p class="gold">✦ Happy Birthday, Shubham. ✦</p>
+
+    <p class="small">A little mystery, just for you.</p>
+  </div>
+</section>
+
+
+<script>
+function go(n) {
+  document.querySelectorAll("section").forEach(section => {
+    section.classList.remove("active");
+  });
+
+  document.getElementById("s" + n).classList.add("active");
+
+  window.scrollTo(0, 0);
+
+  petals();
+}
+
+
+function checkRiddle() {
+  const answer = document
+    .getElementById("riddle")
+    .value
+    .trim()
+    .toLowerCase();
+
+  if (answer === "birthday" || answer === "a birthday") {
+    document.getElementById("rmsg").textContent = "";
+    go(3);
+  } else {
+    document.getElementById("rmsg").textContent =
+      "Not quite… think of a special day that comes every year. 🌙";
+  }
+}
+
+
+function checkCode() {
+  const enteredCode = document
+    .getElementById("code")
+    .value
+    .trim();
+
+  if (enteredCode.toUpperCase() === "SHUBHAM16") {
+    document.getElementById("cmsg").textContent = "";
+    go(4);
+  } else {
+    document.getElementById("cmsg").textContent =
+      "The key doesn't fit. Try again. ✨";
+  }
+}
+
+
+// Interactive magical birthday cake
+
+let cakeBlown = false;
+
+function blow() {
+  const scene = document.getElementById("cakeScene");
+  const message = document.getElementById("cakeMsg");
+  const button = document.getElementById("cakeButton");
+  const sparkles = document.getElementById("sparkles");
+
+  cakeBlown = !cakeBlown;
+
+  if (cakeBlown) {
+    scene.classList.add("blown");
+
+    message.textContent =
+      "May your wish find its way to you. 🤍✨";
+
+    button.textContent = "Relight the Candles 🕯️";
+
+    for (let i = 0; i < 12; i++) {
+      const sparkle = document.createElement("span");
+
+      sparkle.className = "sparkle";
+
+      sparkle.textContent = ["✦", "✧", "✨"][
+        Math.floor(Math.random() * 3)
+      ];
+
+      sparkle.style.left = (10 + Math.random() * 80) + "%";
+      sparkle.style.top = (15 + Math.random() * 65) + "%";
+
+      sparkle.style.animationDelay =
+        (Math.random() * 0.5) + "s";
+
+      sparkles.appendChild(sparkle);
+
+      setTimeout(() => sparkle.remove(), 2200);
+    }
+
+  } else {
+    scene.classList.remove("blown");
+
+    message.textContent =
+      "The candles are glowing again! Make another wish. ✨";
+
+    button.textContent = "Blow Out the Candles 🕯️";
+
+    sparkles.innerHTML = "";
+  }
+
+  petals();
+}
+
+// Things I admire about you
+
+const qualities = [
+  "The kindest heart",
+  "Your character",
+  "The respect you show",
+  "Your care for others",
+  "The warmth you bring into the lives of people around you",
+  "Your understanding",
+  "Your potential",
+  "The person you are becoming"
+];
+
+let qi = 0;
+let admirationStarted = false;
+
+function revealAdmiration() {
+  document.getElementById("admiration").classList.remove("hidden");
+
+  if (!admirationStarted) {
+    admirationStarted = true;
+    showQuality();
+  }
+}
+
+function showQuality() {
+  if (qi < qualities.length) {
+    const box = document.getElementById("qualities");
+    const paragraph = document.createElement("p");
+
+    paragraph.className = "gold";
+    paragraph.textContent = "✧ " + qualities[qi] + " ✧";
+
+    box.appendChild(paragraph);
+
+    qi++;
+
+    if (qi < qualities.length) {
+      setTimeout(showQuality, 900);
+    } else {
+      const finalMessage = document.createElement("p");
+
+      finalMessage.textContent =
+        "And perhaps, someday, you'll understand why these words were worth writing. 🌙";
+
+      box.appendChild(finalMessage);
+    }
+  }
+}
+
+
+// Three little notes
+
+const notes = [
+  "You don't have to have everything figured out. One difficult day or one uncertain moment does not define you. Give yourself the same patience you would give someone you care about.",
+
+  "Be kind to yourself. Progress takes time. And you don't need to be perfect to have a future worth looking forward to.",
+
+  "Dear future self: I hope you've kept your curiosity, learned to forgive your younger self, and found courage to keep going. Remember how much you still had to discover."
+];
+
+function note(i) {
+  const box = document.getElementById("noteText");
+
+  box.textContent = notes[i];
+  box.classList.remove("hidden");
+}
+
+
+// Five hidden stars across the website
+
+const found = new Set();
+
+function findStar(i) {
+  if (found.has(i)) return;
+
+  found.add(i);
+
+  const star = document.querySelector(
+    '.hiddenStar[onclick="findStar(' + i + ')"]'
+  );
+
+  if (star) {
+    star.classList.add("found");
+    star.textContent = "✦";
+    star.disabled = true;
+  }
+
+  const count = document.getElementById("starCount");
+
+  if (count) {
+    count.textContent = found.size;
+  }
+
+  const message = document.getElementById("starMsg");
+
+  if (message) {
+    if (found.size === 5) {
+      message.textContent =
+        "Five little stars, five little discoveries… and one birthday surprise made just for you. ✨";
+    } else {
+      message.textContent =
+        "A little star found! " + found.size +
+        " of 5 discovered. Keep exploring. 🌙";
+    }
+  }
+}
+
+
+// Falling stars and petals
+
+function petals() {
+  for (let i = 0; i < 9; i++) {
+    const petal = document.createElement("div");
+
+    petal.className = "petal";
+
+    petal.textContent = ["✦", "✧", "🌸"][
+      Math.floor(Math.random() * 3)
+    ];
+
+    petal.style.left = Math.random() * 100 + "vw";
+
+    petal.style.animationDelay = Math.random() * 2 + "s";
+
+    document.body.appendChild(petal);
+
+    setTimeout(() => petal.remove(), 10000);
+  }
+}
+</script>
+
+</body>
+  </html>
